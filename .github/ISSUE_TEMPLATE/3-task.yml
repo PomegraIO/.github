@@ -1,0 +1,15 @@
+name: Task
+description: A specific piece of work (chore, upgrade, ops)
+type: Task
+projects: ["PomegraIO/1"]
+body:
+  - type: textarea
+    id: what
+    attributes: {label: What, description: "What needs doing and why"}
+    validations: {required: true}
+  - type: textarea
+    id: done
+    attributes: {label: Done when, value: "- [ ] "}
+  - type: dropdown
+    id: area
+    attributes: {label: Area, options: ["infra","security","data","api","ui","bots","social","content","agents"]}

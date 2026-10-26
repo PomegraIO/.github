@@ -1,0 +1,18 @@
+name: Bug
+description: Something is broken
+type: Bug
+projects: ["PomegraIO/1"]
+body:
+  - type: textarea
+    id: what
+    attributes: {label: What happens, description: "What you saw, where (URL / service / pod)"}
+    validations: {required: true}
+  - type: textarea
+    id: expected
+    attributes: {label: Expected}
+  - type: textarea
+    id: repro
+    attributes: {label: How to reproduce, description: "Steps, logs, screenshots"}
+  - type: dropdown
+    id: area
+    attributes: {label: Area, options: ["infra","security","data","api","ui","bots","social","content","agents"]}

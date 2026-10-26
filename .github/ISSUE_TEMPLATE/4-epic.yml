@@ -1,0 +1,15 @@
+name: Epic
+description: A larger body of work; split it into sub-issues
+type: Epic
+projects: ["PomegraIO/1"]
+body:
+  - type: textarea
+    id: goal
+    attributes: {label: Goal, description: "The outcome, in a sentence or two"}
+    validations: {required: true}
+  - type: textarea
+    id: scope
+    attributes: {label: Scope, description: "In / out of scope"}
+  - type: textarea
+    id: plan
+    attributes: {label: Plan, description: "Rough steps; each becomes a sub-issue (Create sub-issue in the sidebar)"}
