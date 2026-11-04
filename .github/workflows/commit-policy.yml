@@ -1,0 +1,38 @@
+# Reusable: commit authorship + Huly trailer policy (INF-112).
+# Every commit author/committer email must be <slug>@corp.pomegra.io or an allow-listed human/bot;
+# no 'Co-authored-by: Hermes'; PR body needs a 'Huly: KEY' line.
+name: commit-policy
+on:
+  workflow_call:
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  commits:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_BODY: ${{ github.event.pull_request.body }}
+      PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Check commits and PR body
+        shell: bash
+        run: |
+          set -euo pipefail
+          allow='(@corp\.pomegra\.io|^blackpc\.me@gmail\.com|^daryakushnareva@gmail\.com|^62884700\+BigWhiteFish@users\.noreply\.github\.com|^ci@pomegra\.io|^noreply@github\.com|^[0-9]*\+?[A-Za-z0-9-]*\[bot\]@users\.noreply\.github\.com|^[0-9]+\+[A-Za-z0-9-]*-bot@users\.noreply\.github\.com)$'
+          fail=0
+          gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/commits" \
+            --jq '.[] | [.sha[0:9], .commit.author.email, .commit.committer.email, (.commit.message|split("\n")[0]), (.commit.message|test("(?i)co-authored-by:.*(hermes|claude|noreply@anthropic)"))] | @tsv' > commits.tsv
+          while IFS=$'\t' read -r sha ae ce subj co; do
+            for e in "$ae" "$ce"; do
+              printf '%s' "$e" | grep -Eqi "$allow" || { echo "::error::commit $sha: email '$e' is not <slug>@corp.pomegra.io or an allow-listed address"; fail=1; }
+            done
+            [ "$co" = true ] && { echo "::error::commit $sha: 'Co-authored-by: Hermes/Claude' trailer is not allowed"; fail=1; }
+          done < commits.tsv
+          if ! printf '%s\n' "$PR_BODY" | grep -Eq '^Huly: [A-Z][A-Z0-9]*-[0-9]+'; then
+            case "$PR_AUTHOR" in *"[bot]"|*-bot) echo "bot PR: Huly trailer not required";;
+              *) echo "::error::PR body must contain a line 'Huly: KEY' (e.g. Huly: INF-112)"; fail=1;; esac
+          fi
+          [ $fail = 0 ] && echo "ok: $(wc -l < commits.tsv) commit(s) pass" || exit 1

@@ -1,0 +1,13 @@
+# Caller for this repo (local refs; other repos use templates/conventional-caller.yml).
+name: conventional
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  title:
+    uses: ./.github/workflows/pr-title.yml
+  commits:
+    uses: ./.github/workflows/commit-policy.yml
