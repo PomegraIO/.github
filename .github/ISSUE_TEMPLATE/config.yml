@@ -1,5 +1,5 @@
-blank_issues_enabled: true
+blank_issues_enabled: false
 contact_links:
-  - name: Pomegra board
-    url: https://github.com/orgs/PomegraIO/projects/1
-    about: All work across PomegraIO repos
+  - name: Tasks live in Huly (hq.dev.pomegra.io)
+    url: https://hq.dev.pomegra.io/workbench/pomegracorp/tracker
+    about: GitHub issues are retired. Create and track tasks in Huly (VPN + SSO); reference the Huly key (e.g. INF-12) in PRs.

@@ -9,3 +9,5 @@ Org-wide defaults for every PomegraIO repo without its own: issue forms (Bug, Fe
 - **Epics:** issue type Epic, the work split into sub-issues (they can live in other repos).
 - **Board fields:** Status (Backlog, Todo, In progress, In review, Blocked, Done), Priority (P0 now, P1 this cycle, P2 next, P3 someday), Area, Owner (Valera / Hermes / Claude), Size, Iteration (2 weeks), Target date (epics).
 - **Labels:** `area:*` mirrors the Area field; `sev:*`, `kind:*`, `status:*`, `who:*`, `triage` belong to the security triage automation in Pomekube.
+
+> **Tasks live in Huly** (hq.dev.pomegra.io). GitHub issues are retired. PRs reference the Huly key: `Huly: <KEY>`.
