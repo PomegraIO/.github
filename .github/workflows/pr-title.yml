@@ -3,11 +3,16 @@
 name: pr-title
 on:
   workflow_call:
+    inputs:
+      runs-on:
+        description: "Runner label (private repos pass pomegra-k3s, our self-hosted runners with free minutes)"
+        type: string
+        default: ubuntu-latest
 permissions:
   pull-requests: read
 jobs:
   title:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
     steps:
       - uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
         env:

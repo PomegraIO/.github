@@ -1,4 +1,5 @@
 # Caller: copy to .github/workflows/conventional.yml in each repo (INF-112).
+# PRIVATE repos run on our own runners (free minutes): keep `runs-on: pomegra-k3s`. Public repos: delete the `with:` lines.
 name: conventional
 on:
   pull_request:
@@ -9,5 +10,7 @@ permissions:
 jobs:
   title:
     uses: PomegraIO/.github/.github/workflows/pr-title.yml@main
+    with: {runs-on: pomegra-k3s}
   commits:
     uses: PomegraIO/.github/.github/workflows/commit-policy.yml@main
+    with: {runs-on: pomegra-k3s}

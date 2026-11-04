@@ -4,12 +4,17 @@
 name: commit-policy
 on:
   workflow_call:
+    inputs:
+      runs-on:
+        description: "Runner label (private repos pass pomegra-k3s, our self-hosted runners with free minutes)"
+        type: string
+        default: ubuntu-latest
 permissions:
   contents: read
   pull-requests: read
 jobs:
   commits:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
     env:
       GH_TOKEN: ${{ github.token }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
