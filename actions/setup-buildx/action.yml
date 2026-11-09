@@ -1,0 +1,28 @@
+name: Set up Docker Buildx (PomegraIO runners)
+description: >
+  docker/setup-buildx-action that uses the persistent BuildKit of the home-pc runner pods (env BUILDKIT_ENDPOINT, set by Pomekube
+  services/arc-runners-home) when it is reachable, else the local Docker daemon. Use after the optional docker config isolation step.
+inputs:
+  local-driver:
+    description: buildx driver when no shared BuildKit is available
+    default: docker-container
+runs:
+  using: composite
+  steps:
+    - id: bk
+      shell: bash
+      run: |
+        ep="${BUILDKIT_ENDPOINT:-}"
+        if [ -n "$ep" ]; then
+          hp="${ep#tcp://}"
+          if timeout 5 bash -c "exec 3<>/dev/tcp/${hp%:*}/${hp##*:}" 2>/dev/null; then
+            echo "driver=remote" >> "$GITHUB_OUTPUT"; echo "endpoint=$ep" >> "$GITHUB_OUTPUT"
+            echo "Using the shared BuildKit $ep"
+          else
+            echo "::warning::BUILDKIT_ENDPOINT $ep unreachable: building with the local Docker daemon"
+          fi
+        fi
+    - uses: docker/setup-buildx-action@v3
+      with:
+        driver: ${{ steps.bk.outputs.driver || inputs.local-driver }}
+        endpoint: ${{ steps.bk.outputs.endpoint }}
